@@ -3,4 +3,4 @@ spring:
     name: message-service
   cloud:
     config:
-      server: ${config.server}
+      uri: ${config.server}
