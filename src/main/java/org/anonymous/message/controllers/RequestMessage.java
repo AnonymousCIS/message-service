@@ -8,18 +8,18 @@ import org.anonymous.member.Member;
 @Data
 public class RequestMessage {
 
-    private Member email;
+    private String email;
 
-    private Member name;
+    private String name;
 
-    private boolean notice; // 공지
+    private boolean notice; // 쪽지 공지
 
     private String gid; // 파일 아이디
 
     @NotBlank
-    private String subject; // 제목
+    private String subject; // 쪽지 제목
 
     @NotBlank
-    private String content; // 내용
+    private String content; // 쪽지 내용
 
 }
