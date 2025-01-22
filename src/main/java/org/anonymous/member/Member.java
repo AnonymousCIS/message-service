@@ -15,7 +15,9 @@ import java.util.List;
 public class Member implements UserDetails {
 
     private Long seq;
+
     private String email;
+
     private String name;
 
     private List<Authority> _authorities;
