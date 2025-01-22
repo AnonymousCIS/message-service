@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class MessageControllers {
-    /*
+public class MessageController {
+        /*
     * - POST /write : 쪽지 작성
 - GET /view/{seq} : 쪽지 단일 조회
 - GET /list : 쪽지 목록
