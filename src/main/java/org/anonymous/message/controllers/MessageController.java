@@ -40,13 +40,13 @@ public class MessageController {
      * @param errors
      * @return
      */
-    @ResponseStatus(HttpStatus.CREATED)
+    /*@ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/upload")
     public JSONData upload(@RequestBody @Valid RequestMessage form, Errors errors) {
 
 
         return null;
-    }
+    }*/
 
     /**
      * 쪽지 작성
@@ -74,6 +74,7 @@ public class MessageController {
      */
     @GetMapping("/view/{seq}")
     public JSONData view(@PathVariable("seq") Long seq) {
+        commonProcess("view");
 
         return null;
     }
@@ -85,6 +86,7 @@ public class MessageController {
      */
     @GetMapping("/list")
     public JSONData list() {
+        commonProcess("list");
 
         return null;
     }
