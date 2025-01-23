@@ -10,8 +10,6 @@ public class RequestMessage {
 
     private String email;
 
-    private String name;
-
     private boolean notice; // 쪽지 공지
 
     private String gid; // 파일 아이디
