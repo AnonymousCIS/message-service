@@ -10,6 +10,7 @@ import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.MemberUtil;
+import org.anonymous.message.services.*;
 import org.anonymous.message.validators.MessageValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
@@ -24,6 +25,11 @@ public class MessageController {
 
     private final Utils utils;
     private final MessageValidator messageValidator;
+    private final MessageInfoService messageInfoService;
+    private final MessageSendService messageSendService;
+    private final MessageCountService messageCountService;
+    private final MessageStatusService messageStatusService;
+    private final MessageDeleteService messageDeleteService;
 
         /*
     * - POST /write : 쪽지 작성
@@ -63,6 +69,8 @@ public class MessageController {
             throw new BadRequestException();
         }
 
+        messageSendService.process();
+
         return null;
     }
 
@@ -76,6 +84,11 @@ public class MessageController {
     public JSONData view(@PathVariable("seq") Long seq) {
         commonProcess("view");
 
+
+        messageInfoService.get();
+
+        messageStatusService.change();
+
         return null;
     }
 
@@ -88,6 +101,9 @@ public class MessageController {
     public JSONData list() {
         commonProcess("list");
 
+
+        messageInfoService.getList();
+
         return null;
     }
 
@@ -99,6 +115,8 @@ public class MessageController {
     @GetMapping("/count")
     public JSONData count() {
 
+        messageCountService.totalUnRead();
+
         return null;
     }
 
@@ -109,6 +127,8 @@ public class MessageController {
      */
     @PatchMapping("/deletes")
     public JSONData deletes() {
+
+        messageDeleteService.process();
 
         return null;
     }
