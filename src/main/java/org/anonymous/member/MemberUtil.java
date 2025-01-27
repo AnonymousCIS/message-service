@@ -22,9 +22,9 @@ public class MemberUtil {
 
     // 로그인 회원 정보 조회
     public Member getMember() {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Member) {
+            System.out.println("member : " + authentication.getPrincipal());
             return (Member) authentication.getPrincipal();
         }
 
