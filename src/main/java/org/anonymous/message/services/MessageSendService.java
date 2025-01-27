@@ -37,11 +37,9 @@ public class MessageSendService {
 
         HttpEntity<Member> request = new HttpEntity<>(headers);
 
-        String apiUrl = utils.serviceUrl("member-service", "/info" + form.getEmail());
+        String apiUrl = utils.serviceUrl("member-service", "/info/" + form.getEmail());
         ResponseEntity<Member> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Member.class);
-        if (!form.isNotice() == true) {
-            item = null;
-        }
+        item = !form.isNotice() ? item : null;
 
 
         Message message = Message.builder()
