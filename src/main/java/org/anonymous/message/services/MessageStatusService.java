@@ -1,6 +1,9 @@
 package org.anonymous.message.services;
 
 import lombok.RequiredArgsConstructor;
+import org.anonymous.message.constants.MessageStatus;
+import org.anonymous.message.entities.Message;
+import org.anonymous.message.repositories.MessageRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +12,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MessageStatusService {
 
-    public void change() {
+    private final MessageInfoService infoService;
+    private final MessageRepository repository;
 
+    public void change(Long seq) {
+        Message item = infoService.get(seq);
+        if (item.isReceived()) { // 수신한 메세지만 열람 상태로 변경
+            item.setStatus(MessageStatus.READ);
+        }
+
+        repository.saveAndFlush(item);
     }
 }
