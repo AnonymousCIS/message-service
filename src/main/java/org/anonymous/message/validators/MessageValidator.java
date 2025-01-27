@@ -56,7 +56,7 @@ public class MessageValidator implements Validator {
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        String apiUrl = utils.serviceUrl("member-service", "/exists" + form.getEmail());
+        String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getEmail());
         ResponseEntity<Void> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Void.class);
         if (!notice && item.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
             errors.reject("NotFound.member");
