@@ -2,6 +2,7 @@ package org.anonymous.message.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.anonymous.global.entities.BaseEntity;
@@ -10,6 +11,7 @@ import org.anonymous.message.constants.MessageStatus;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Message extends BaseMemberEntity {
