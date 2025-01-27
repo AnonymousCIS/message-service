@@ -137,6 +137,10 @@ public class Utils {
         return StringUtils.hasText(auth) ? auth.substring(7).trim() : null;
     }
 
+    /**
+     * 모바일 여부
+     * @return
+     */
     public boolean isMobile() {
 
         // 요청 헤더 - User-Agent / 브라우저 정보
