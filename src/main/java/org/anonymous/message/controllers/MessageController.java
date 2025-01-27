@@ -1,15 +1,19 @@
 package org.anonymous.message.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.MemberUtil;
+import org.anonymous.message.entities.Message;
 import org.anonymous.message.services.*;
 import org.anonymous.message.validators.MessageValidator;
 import org.springframework.http.HttpStatus;
@@ -17,7 +21,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,11 +31,12 @@ public class MessageController {
 
     private final Utils utils;
     private final MessageValidator messageValidator;
-    private final MessageInfoService messageInfoService;
-    private final MessageSendService messageSendService;
+    private final MessageInfoService infoService;
+    private final MessageSendService sendService;
     private final MessageCountService messageCountService;
-    private final MessageStatusService messageStatusService;
-    private final MessageDeleteService messageDeleteService;
+    private final MessageStatusService statusService;
+    private final MessageDeleteService deleteService;
+    private final ObjectMapper om;
 
         /*
     * - POST /write : 쪽지 작성
@@ -60,7 +67,7 @@ public class MessageController {
      * @return
      */
     @PostMapping("/write")
-    public JSONData write(@Valid @RequestBody RequestMessage form, Errors errors) {
+    public JSONData write(@Valid @RequestBody RequestMessage form, Errors errors, HttpServletRequest request) {
         commonProcess("write");
 
         messageValidator.validate(form, errors);
@@ -69,9 +76,25 @@ public class MessageController {
             throw new BadRequestException();
         }
 
-        messageSendService.process();
+        Message message = sendService.process(form);
+        long totalUnRead = messageCountService.totalUnRead(form.getEmail());
+        Map<String, Object> data = new HashMap<>();
+        data.put("item", message);
+        data.put("totalUnRead", totalUnRead);
 
-        return null;
+        StringBuffer sb = new StringBuffer();
+
+        try{
+            String json = om.writeValueAsString(data);
+            sb.append(String.format("if (typeof webSocket != undefined) { webSocket.onopen = () => webSocket.send('%s'); }", json));
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        sb.append(String.format("location.replace('%s')", request.getContextPath() + "/list"));
+
+        return new JSONData(data);
     }
 
     /**
@@ -85,9 +108,9 @@ public class MessageController {
         commonProcess("view");
 
 
-        messageInfoService.get();
+        infoService.get(seq);
 
-        messageStatusService.change();
+        statusService.change(seq);
 
         return null;
     }
@@ -98,11 +121,11 @@ public class MessageController {
      * @return
      */
     @GetMapping("/list")
-    public JSONData list() {
+    public JSONData list(@ModelAttribute MessageSearch search) {
         commonProcess("list");
 
 
-        messageInfoService.getList();
+        infoService.getList(search);
 
         return null;
     }
@@ -128,7 +151,7 @@ public class MessageController {
     @PatchMapping("/deletes")
     public JSONData deletes() {
 
-        messageDeleteService.process();
+        deleteService.process();
 
         return null;
     }
