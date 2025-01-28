@@ -2,7 +2,6 @@ package org.anonymous.message.services;
 
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.libs.Utils;
-import org.anonymous.member.Member;
 import org.anonymous.member.MemberUtil;
 import org.anonymous.message.constants.MessageStatus;
 import org.anonymous.message.controllers.RequestMessage;
@@ -35,22 +34,19 @@ public class MessageSendService {
             headers.setBearerAuth(token);
         }
 
-        HttpEntity<Member> request = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        String apiUrl = utils.serviceUrl("member-service", "/info/" + form.getEmail());
-        ResponseEntity<Member> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Member.class);
-        item = !form.isNotice() ? item : null;
-        System.out.println("item" + item);
+        String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getEmail());
+        ResponseEntity<Void> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Void.class);
+//        System.out.println("item" + item);
 
 
         Message message = Message.builder()
                 .notice(form.isNotice()) // 공지
                 .subject(form.getSubject()) // 제목
                 .content(form.getContent()) // 내용
-                .senderEmail(memberUtil.getMember().getEmail())
-                .senderName(memberUtil.getMember().getName())
-                .receiverEmail(item.getBody().getEmail())
-                .receiverName(item.getBody().getName())
+                .senderEmail(memberUtil.getMember().getEmail()) // 보낸 사람 이메일
+                .receiverEmail(form.getEmail())
                 .status(MessageStatus.UNREAD)
                 .build();
 

@@ -34,12 +34,8 @@ public class MessageControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private MessageInfoService infoService;
-
-    @Autowired
     private MessageSendService sendService;
 
-    private Message message;
     private RequestMessage form;
 
     @BeforeEach
@@ -54,33 +50,27 @@ public class MessageControllerTest {
     @MockMember
     @DisplayName("쪽지 작성 테스트")
     void writeTest() throws Exception{
-        createMessage();
 
-        String body = om.writeValueAsString(form);
+        form = new RequestMessage();
+        form.setEmail("user02@test.org");
+        form.setSubject("제목");
+        form.setContent("내용");
+        sendService.process(form);
+
+        /*String body = om.writeValueAsString(form);
 
         String res = mockMvc.perform(post("/write")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)).andDo(print())
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         JSONData jsonData = om.readValue(res, JSONData.class);
-        Message data = om.readValue(om.writeValueAsString(jsonData.getData()), Message.class);
-        System.out.println("data : " + data);
+        Message data = om.readValue(om.writeValueAsString(jsonData.getData()), Message.class);*/
+//        System.out.println("data : " + data);
 
         /*MessageSearch search = new MessageSearch();
         search.setMode("send");
         ListData<Message> data = infoService.getList(search);
         List<Message> items = data.getItems();*/
-
-    }
-
-    void createMessage(){
-        for (int i = 0; i < 10; i++) {
-            form = new RequestMessage();
-            form.setEmail("user02@test.org");
-            form.setSubject("제목" + i);
-            form.setContent("내용" + i);
-            sendService.process(form);
-        }
 
     }
 

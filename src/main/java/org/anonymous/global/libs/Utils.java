@@ -128,7 +128,7 @@ public class Utils {
     }
 
     /**
-     * 요청 헤더 : Authorizaion: Bearer ...
+     * 요청 헤더 : Authorization: Bearer ...
      * @return
      */
     public String getAuthToken() {
