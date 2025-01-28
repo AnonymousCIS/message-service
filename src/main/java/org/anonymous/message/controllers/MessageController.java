@@ -2,6 +2,7 @@ package org.anonymous.message.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
+import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.MemberUtil;
 import org.anonymous.message.entities.Message;
@@ -107,12 +109,13 @@ public class MessageController {
     public JSONData view(@PathVariable("seq") Long seq) {
         commonProcess("view");
 
+//        조회
+        Message item = infoService.get(seq);
 
-        infoService.get(seq);
-
+//        미열람 -> 열람 변환
         statusService.change(seq);
 
-        return null;
+        return new JSONData(item);
     }
 
     /**
@@ -125,9 +128,9 @@ public class MessageController {
         commonProcess("list");
 
 
-        infoService.getList(search);
+        ListData<Message> item = infoService.getList(search);
 
-        return null;
+        return new JSONData(item);
     }
 
     /**
@@ -138,9 +141,9 @@ public class MessageController {
     @GetMapping("/count")
     public JSONData count() {
 
-        messageCountService.totalUnRead();
+        Long count = messageCountService.totalUnRead();
 
-        return null;
+        return new JSONData(count);
     }
 
     /**
@@ -149,11 +152,11 @@ public class MessageController {
      * @return
      */
     @PatchMapping("/deletes")
-    public JSONData deletes() {
+    public JSONData deletes(@RequestParam("seq") List<Long> seqs, @RequestParam(name = "mode", defaultValue = "receive") String mode) {
 
-        deleteService.process();
+        List<Message> items = deleteService.deletes(seqs, mode);
 
-        return null;
+        return new JSONData(items);
     }
 
     private void commonProcess(String mode) {

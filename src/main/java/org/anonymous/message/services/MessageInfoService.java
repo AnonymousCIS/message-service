@@ -48,11 +48,13 @@ public class MessageInfoService {
             Member member = memberUtil.getMember();
             BooleanBuilder orBuilder2 = new BooleanBuilder();
             BooleanBuilder andBuilder = new BooleanBuilder();
-            orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiverEmail.isNull()))
+            orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiverEmail.isNull()).and(message.deletedByReceiver.isNull()))
                     .or(message.receiverEmail.eq(member.getEmail()));
 
             orBuilder.or(message.senderEmail.eq(member.getEmail())
                     .or(orBuilder2));
+
+
 
             builder.and(orBuilder);
         }
@@ -62,6 +64,11 @@ public class MessageInfoService {
         return item;
     }
 
+    /**
+     * 쪽지 목록 조회
+     * @param search
+     * @return
+     */
     public ListData<Message> getList(MessageSearch search) {
         int page = Math.max(search.getPage(), 1);
         int limit = search.getLimit();
@@ -77,13 +84,13 @@ public class MessageInfoService {
         mode = StringUtils.hasText(mode) ? mode : "receive";
 //        send - 보낸 쪽지 목록, receive - 받은 쪽지 목록
         if (mode.equals("send")) {
-            andBuilder.and(message.senderEmail.eq(member.getEmail()));
+            andBuilder.and(message.senderEmail.eq(member.getEmail())).and(message.deletedAt.isNull());
         } else {
             BooleanBuilder orBuilder = new BooleanBuilder();
             BooleanBuilder andBuilder2 = new BooleanBuilder();
 
             orBuilder.or(andBuilder2.and(message.notice.eq(true)).and(message.receiverEmail.isNull())) //공지 쪽지
-                    .or(message.receiverEmail.eq(member.getEmail()));
+                    .or(andBuilder2.and(message.deletedAt.isNull()).and(message.receiverEmail.eq(member.getEmail())));
 
             andBuilder.and(orBuilder);
         }
@@ -93,7 +100,7 @@ public class MessageInfoService {
 //        보낸 사람 조건 검색
         List<String> sender =search.getSender();
         if (mode.equals("receive") && sender != null && !sender.isEmpty()) {
-            andBuilder.and(message.senderEmail.in(sender));
+            andBuilder.and(message.senderEmail.in(sender).and(message.deletedAt.isNull()));
         }
 
 //        키워드 검색 처리

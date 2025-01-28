@@ -21,6 +21,7 @@ public class MockSecurityContextFactory implements WithSecurityContextFactory<Mo
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
+//        System.out.println("context : " + context);
 
         return  context;
     }

@@ -1,10 +1,8 @@
 package org.anonymous.member.test.message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.test.annotations.MockMember;
-import org.anonymous.message.controllers.MessageSearch;
 import org.anonymous.message.controllers.RequestMessage;
 import org.anonymous.message.entities.Message;
 import org.anonymous.message.services.MessageInfoService;
@@ -20,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,7 +64,7 @@ public class MessageControllerTest {
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         JSONData jsonData = om.readValue(res, JSONData.class);
         Message data = om.readValue(om.writeValueAsString(jsonData.getData()), Message.class);
-        System.out.println(data);
+        System.out.println("data : " + data);
 
         /*MessageSearch search = new MessageSearch();
         search.setMode("send");

@@ -40,12 +40,13 @@ public class MessageSendService {
         String apiUrl = utils.serviceUrl("member-service", "/info/" + form.getEmail());
         ResponseEntity<Member> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Member.class);
         item = !form.isNotice() ? item : null;
+        System.out.println("item" + item);
 
 
         Message message = Message.builder()
-                .notice(form.isNotice())
-                .subject(form.getSubject())
-                .content(form.getContent())
+                .notice(form.isNotice()) // 공지
+                .subject(form.getSubject()) // 제목
+                .content(form.getContent()) // 내용
                 .senderEmail(memberUtil.getMember().getEmail())
                 .senderName(memberUtil.getMember().getName())
                 .receiverEmail(item.getBody().getEmail())
