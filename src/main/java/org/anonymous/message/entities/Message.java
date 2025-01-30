@@ -14,6 +14,7 @@ import org.anonymous.message.constants.MessageStatus;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = @Index(name = "idx_notice_created_at", columnList = "notice DESC, createdAt DESC"))
 public class Message extends BaseMemberEntity {
 
     @Id @GeneratedValue

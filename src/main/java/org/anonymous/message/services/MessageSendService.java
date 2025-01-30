@@ -6,6 +6,7 @@ import org.anonymous.member.MemberUtil;
 import org.anonymous.message.constants.MessageStatus;
 import org.anonymous.message.controllers.RequestMessage;
 import org.anonymous.message.entities.Message;
+import org.anonymous.message.exceptions.MessageReceiverNotFoundException;
 import org.anonymous.message.repositories.MessageRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
@@ -38,7 +39,10 @@ public class MessageSendService {
 
         String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getEmail());
         ResponseEntity<Void> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Void.class);
-//        System.out.println("item" + item);
+
+        if (item.getStatusCode() == HttpStatus.NOT_FOUND) {
+            new MessageReceiverNotFoundException();
+        }
 
 
         Message message = Message.builder()
@@ -46,7 +50,7 @@ public class MessageSendService {
                 .subject(form.getSubject()) // 제목
                 .content(form.getContent()) // 내용
                 .senderEmail(memberUtil.getMember().getEmail()) // 보낸 사람 이메일
-                .receiverEmail(form.getEmail())
+                .receiverEmail(form.getEmail()) // 받는 사람 이메일
                 .status(MessageStatus.UNREAD)
                 .build();
 
