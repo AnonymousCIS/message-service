@@ -10,6 +10,7 @@ import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
 import org.anonymous.member.Member;
 import org.anonymous.member.MemberUtil;
+import org.anonymous.message.constants.MessageStatus;
 import org.anonymous.message.controllers.MessageSearch;
 import org.anonymous.message.entities.Message;
 import org.anonymous.message.entities.QMessage;
@@ -48,7 +49,7 @@ public class MessageInfoService {
             Member member = memberUtil.getMember();
             BooleanBuilder orBuilder2 = new BooleanBuilder();
             BooleanBuilder andBuilder = new BooleanBuilder();
-            orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiverEmail.isNull()).and(message.deletedByReceiver.isNull()))
+            orBuilder2.or(andBuilder.and(message.notice.eq(true)).and(message.receiverEmail.isNull()))
                     .or(message.receiverEmail.eq(member.getEmail()));
 
             orBuilder.or(message.senderEmail.eq(member.getEmail())
@@ -56,7 +57,7 @@ public class MessageInfoService {
 
 
 
-            builder.and(orBuilder);
+            builder.and(orBuilder).and(message.deletedAt.isNull());
         }
 
         Message item = messageRepository.findOne(builder).orElseThrow(MessageNotFoundException::new);
@@ -82,34 +83,44 @@ public class MessageInfoService {
         Member member = memberUtil.getMember();
 
         mode = StringUtils.hasText(mode) ? mode : "receive";
+
 //        send - 보낸 쪽지 목록, receive - 받은 쪽지 목록
         if (mode.equals("send")) {
-            andBuilder.and(message.senderEmail.eq(member.getEmail())).and(message.deletedAt.isNull());
+            andBuilder.and(message.senderEmail.eq(member.getEmail()));
         } else {
             BooleanBuilder orBuilder = new BooleanBuilder();
             BooleanBuilder andBuilder2 = new BooleanBuilder();
 
             orBuilder.or(andBuilder2.and(message.notice.eq(true)).and(message.receiverEmail.isNull())) //공지 쪽지
-                    .or(andBuilder2.and(message.deletedAt.isNull()).and(message.receiverEmail.eq(member.getEmail())));
+                    .or(andBuilder2.and(message.receiverEmail.eq(member.getEmail())));
 
-            andBuilder.and(orBuilder);
+            andBuilder.and(orBuilder).and(message.deletedAt.isNull());
         }
 
         andBuilder.and(mode.equals("send") ? message.deletedBySender.eq(false) : message.deletedByReceiver.eq(false));
 
 //        보낸 사람 조건 검색
-        List<String> sender =search.getSender();
+        List<String> sender = search.getSender();
         if (mode.equals("receive") && sender != null && !sender.isEmpty()) {
             andBuilder.and(message.senderEmail.in(sender).and(message.deletedAt.isNull()));
         }
 
-//        키워드 검색 처리
+//        키워드 검색 처리 ALL(SUBJECT + CONTENT), SUBJECT
         String sopt = search.getSopt();
         String skey = search.getSkey();
+
         sopt = StringUtils.hasText(sopt) ? sopt : "ALL";
+
         if (StringUtils.hasText(skey)) {
             StringExpression condition = sopt.equals("SUBJECT") ? message.subject : message.subject.concat(message.content);
-            andBuilder.and(condition.contains(skey.trim()));
+            andBuilder.and(condition.contains(skey.trim())).and(message.deletedAt.isNull());
+        }
+
+        // 상태(열람, 미열람) 검색
+        List<MessageStatus> status = search.getStatus();
+
+        if (status != null && !status.isEmpty()) {
+            andBuilder.and(message.status.in(status).and(message.deletedAt.isNull()));
         }
 
 //        검색 조건 처리 E
