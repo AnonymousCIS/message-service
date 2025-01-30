@@ -180,6 +180,10 @@ public class MessageController {
      */
     @Operation(summary = "쪽지 단일 & 목록 삭제", description = "쪽지를 단일 & 목록으로 삭제합니다. (일반 사용자용 삭제는 DB에서 삭제X, DeletedAt으로 현재 시간 부여)")
     @Parameter(name = "seq", description = "쪽지 ID")
+    @Parameter(name = "mode", description = "쪽지 보낸 사람, 받는 사람", examples = {
+            @ExampleObject(name = "receive", value = "receive", description = "쪽지 받는 사람"),
+            @ExampleObject(name = "send", value = "send", description = "쪽지 보낸 사람")
+    })
     @PatchMapping("/deletes")
     public JSONData deletes(@RequestParam("seq") List<Long> seqs, @RequestParam(name = "mode", defaultValue = "receive") String mode) {
 
