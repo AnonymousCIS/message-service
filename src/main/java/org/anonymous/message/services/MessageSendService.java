@@ -37,7 +37,7 @@ public class MessageSendService {
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getEmail());
+        String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getReceiverEmail());
         ResponseEntity<Void> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Void.class);
 
         if (item.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -46,11 +46,12 @@ public class MessageSendService {
 
 
         Message message = Message.builder()
+                .seq(form.getSeq())
                 .notice(form.isNotice()) // 공지
                 .subject(form.getSubject()) // 제목
                 .content(form.getContent()) // 내용
                 .senderEmail(memberUtil.getMember().getEmail()) // 보낸 사람 이메일
-                .receiverEmail(form.getEmail()) // 받는 사람 이메일
+                .receiverEmail(form.getReceiverEmail()) // 받는 사람 이메일
                 .status(MessageStatus.UNREAD)
                 .build();
 

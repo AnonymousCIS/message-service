@@ -43,7 +43,7 @@ public class MessageControllerTest {
         form = new RequestMessage();
         form.setSubject("제목");
         form.setContent("내용");
-        form.setEmail("user01@test.org");
+        form.setReceiverEmail("user01@test.org");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class MessageControllerTest {
     void writeTest() throws Exception{
 
         form = new RequestMessage();
-        form.setEmail("user02@test.org");
+        form.setReceiverEmail("user02@test.org");
         form.setSubject("제목");
         form.setContent("내용");
         sendService.process(form);
