@@ -1,8 +1,9 @@
 package org.anonymous.member.test.message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.anonymous.global.paging.ListData;
 import org.anonymous.member.test.annotations.MockMember;
-import org.anonymous.message.constants.MessageStatus;
+import org.anonymous.message.controllers.MessageSearch;
 import org.anonymous.message.controllers.RequestMessage;
 import org.anonymous.message.entities.Message;
 import org.anonymous.message.services.MessageInfoService;
@@ -16,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles({"default"})
@@ -48,19 +51,15 @@ public class MessageControllerTest {
         form.setReceiverEmail("user02@test.org");
         form.setSubject("제목");
         form.setContent("내용");
+
+
     }
 
     @Test
     @MockMember
     @DisplayName("쪽지 작성 테스트")
     void writeTest() throws Exception{
-        message.setSeq(1L);
-        message.setNotice(false);
-        message.setStatus(MessageStatus.UNREAD);
-        message.setSenderEmail("user01@test.org");
-        message.setReceiverEmail("user02@test.org");
-        message.setSubject("제목");
-        message.setContent("내용");
+
 
 
 //        sendService.process(form);
@@ -87,8 +86,12 @@ public class MessageControllerTest {
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception{
 
-        infoService.get(form.getSeq());
-        statusService.change(form.getSeq());
+        MessageSearch search = new MessageSearch();
+        search.setMode("send");
+        ListData<Message> data = infoService.getList(search);
+        List<Message> item = data.getItems();
+
+
     }
 
 }
