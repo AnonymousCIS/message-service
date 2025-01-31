@@ -2,38 +2,32 @@ package org.anonymous.message.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
-import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
-import org.anonymous.member.MemberUtil;
 import org.anonymous.message.entities.Message;
 import org.anonymous.message.services.*;
 import org.anonymous.message.validators.MessageValidator;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Message API", description = "공용 Message 기능")
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
 
-    private final Utils utils;
     private final MessageValidator messageValidator;
     private final MessageInfoService infoService;
     private final MessageSendService sendService;
