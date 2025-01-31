@@ -46,7 +46,6 @@ public class MessageSendService {
 
 
         Message message = Message.builder()
-                .seq(form.getSeq())
                 .notice(form.isNotice()) // 공지
                 .subject(form.getSubject()) // 제목
                 .content(form.getContent()) // 내용
