@@ -25,6 +25,7 @@ public class Message extends BaseMemberEntity {
     @Column(length = 10, nullable = false)
     private MessageStatus status;
 
+    private boolean isBlock;
 
     private String senderEmail; // 보낸사람 이메일
 

@@ -51,7 +51,7 @@ public class MessageAdminController {
      * 보낸 사람 이메일 언블락 처리
      * @param email
      */
-    @PatchMapping("/unBlock")
+    @PatchMapping("/unblock")
     public void unBlock(@RequestParam("email") String email) {
 
          statusService.unBlock(email);

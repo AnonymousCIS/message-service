@@ -5,8 +5,6 @@ import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.member.MemberUtil;
 import org.anonymous.message.constants.MessageStatus;
 import org.anonymous.message.entities.Message;
-import org.anonymous.message.entities.MessageBlock;
-import org.anonymous.message.repositories.MessageBlockRepository;
 import org.anonymous.message.repositories.MessageRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ public class MessageStatusService {
 
     private final MessageInfoService infoService;
     private final MessageRepository repository;
-    private final MessageBlockRepository blockRepository;
     private final MemberUtil memberUtil;
 
     public void change(Long seq) {
@@ -41,15 +38,9 @@ public class MessageStatusService {
         }
 
         for (Message item : items) {
-            item.setStatus(MessageStatus.BLOCK);
-            MessageBlock messageBlock = new MessageBlock();
-            messageBlock.setSeq(item.getSeq());
-            messageBlock.setStatus(item.getStatus());
-            messageBlock.setType("email");
-            messageBlock.setEmail(item.getSenderEmail());
-            blockRepository.save(messageBlock);
+
+            item.setBlock(true);
         }
-        blockRepository.flush();
 
     }
 
@@ -62,14 +53,8 @@ public class MessageStatusService {
         }
 
         for (Message item : items) {
-            item.setStatus(MessageStatus.ALL);
-            MessageBlock messageBlock = new MessageBlock();
-            messageBlock.setSeq(item.getSeq());
-            messageBlock.setStatus(item.getStatus());
-            messageBlock.setType("email");
-            messageBlock.setEmail(item.getReceiverEmail());
-            blockRepository.save(messageBlock);
+
+            item.setBlock(false);
         }
-        blockRepository.flush();
     }
 }
