@@ -41,6 +41,8 @@ public class MessageAdminController {
      * 보낸 사람 이메일 블락 처리
      * @param email
      */
+    @Operation(summary = "보낸 사람 이메일 블락 처리", description = "보낸 사람의 이메일을 블락 처리합니다.")
+    @Parameter(name = "email", description = "보낸 사람 이메일", required = true, example = "user01@test.org")
     @PatchMapping("/block")
     public void block(@RequestParam("email") String email) {
 
@@ -51,6 +53,8 @@ public class MessageAdminController {
      * 보낸 사람 이메일 언블락 처리
      * @param email
      */
+    @Operation(summary = "보낸 사람 이메일 블락 처리 취소", description = "보낸 사람의 이메일 블락 처리를 취소합니다.")
+    @Parameter(name = "email", description = "보낸 사람 이메일", required = true, example = "user01@test.org")
     @PatchMapping("/unblock")
     public void unBlock(@RequestParam("email") String email) {
 
