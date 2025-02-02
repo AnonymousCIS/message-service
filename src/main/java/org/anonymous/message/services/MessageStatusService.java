@@ -32,7 +32,7 @@ public class MessageStatusService {
 
     public void status(List<String> emails, boolean status) {
 
-        if (emails.isEmpty() && emails == null) {
+        if (emails.isEmpty() || emails == null) {
             // 예외처리
             throw new BadRequestException();
         }
