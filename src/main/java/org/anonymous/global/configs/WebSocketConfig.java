@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         String profile = System.getenv("spring.profiles.active");
 
         registry.addHandler(messageHandler, "msg")
-                .setAllowedOrigins(profile.contains("prod") ? "" : "http://localhost:3006");
+                .setAllowedOrigins(profile.contains("prod") ? "" : "http://cis-message-service.koreait.xyz");
 
     }
 }
