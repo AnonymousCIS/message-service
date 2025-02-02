@@ -2,6 +2,7 @@ package org.anonymous.message.services;
 
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.libs.Utils;
+import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.MemberUtil;
 import org.anonymous.message.constants.MessageStatus;
 import org.anonymous.message.controllers.RequestMessage;
@@ -37,8 +38,9 @@ public class MessageSendService {
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        String apiUrl = utils.serviceUrl("member-service", "/exists/" + form.getReceiverEmail());
-        ResponseEntity<Void> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, Void.class);
+        String apiUrl = utils.serviceUrl("member-service", "/info/" + form.getReceiverEmail());
+        ResponseEntity<JSONData> item = restTemplate.exchange(URI.create(apiUrl), HttpMethod.GET, request, JSONData.class);
+
 
         if (item.getStatusCode() == HttpStatus.NOT_FOUND) {
             new MessageReceiverNotFoundException();
