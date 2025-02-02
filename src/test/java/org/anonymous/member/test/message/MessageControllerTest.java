@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
 import org.anonymous.message.controllers.RequestMessage;
 import org.anonymous.message.services.MessageInfoService;
@@ -79,9 +80,9 @@ public class MessageControllerTest {
     @DisplayName("쪽지 작성 테스트")
     void writeTest() throws Exception {
 
-        for (int i = 2; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             form = new RequestMessage();
-            form.setReceiverEmail("user0" + i + "@test.org");
+            form.setReceiverEmail("user01@test.org");
             form.setSubject("제목" + i);
             form.setContent("내용내용내용내용" + i);
 
@@ -92,6 +93,8 @@ public class MessageControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)).andDo(print());
         }
+
+
 
 
 //        sendService.process(form);
@@ -114,11 +117,11 @@ public class MessageControllerTest {
     }
 
     @Test
-    @MockMember(email = "user02@test.org")
+    @MockMember
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception {
 
-        mockMvc.perform(get("/view/1")
+        mockMvc.perform(get("/view/1952")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
@@ -126,7 +129,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    @MockMember(email = "user02@test.org")
+    @MockMember
     @DisplayName("쪽지 목록 조회 테스트")
     void listTest() throws Exception {
 
@@ -152,6 +155,8 @@ public class MessageControllerTest {
     void deletesTest() throws Exception {
 
         mockMvc.perform(patch("/deletes")
+                        .param("seq", "2052")
+                        .param("mode", "receive")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
