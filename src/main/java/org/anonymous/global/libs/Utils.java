@@ -7,6 +7,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -115,12 +116,53 @@ public class Utils {
     }
 
     /**
-     * 요청 헤더 : Authorizaion: Bearer ...
+     * 전체 주소
+     *
+     * @param url
+     * @return
+     */
+    public String getUrl(String url) {
+        int port = request.getServerPort();
+        String _port = port == 80 || port == 443 ? "" : ":" + port;
+        return String.format("%s://%s%s%s%s", request.getScheme(), request.getServerName(), _port, request.getContextPath(), url);
+    }
+
+    /**
+     * 요청 헤더 : Authorization: Bearer ...
      * @return
      */
     public String getAuthToken() {
         String auth = request.getHeader("Authorization");
 
         return StringUtils.hasText(auth) ? auth.substring(7).trim() : null;
+    }
+
+    /**
+     * 모바일 여부
+     * @return
+     */
+    public boolean isMobile() {
+
+        // 요청 헤더 - User-Agent / 브라우저 정보
+        String ua = request.getHeader("User-Agent");
+        String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
+
+
+        return StringUtils.hasText(ua) && ua.matches(pattern);
+    }
+
+    /**
+     * 요청 헤더
+     *  - JWT 토큰이 있으면 자동 추가
+     * @return
+     */
+    public HttpHeaders getRequestHeader() {
+        String token = getAuthToken();
+        HttpHeaders headers = new HttpHeaders();
+        if (StringUtils.hasText(token)){
+            headers.setBearerAuth(token);
+        }
+
+        return headers;
     }
 }

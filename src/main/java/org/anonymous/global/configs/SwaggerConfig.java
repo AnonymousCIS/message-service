@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info=@Info(title="메세지 서비스"))
+@OpenAPIDefinition(info=@Info(title="메세지 서비스", description = "쪽지 API"))
 public class SwaggerConfig {
 
     @Bean
