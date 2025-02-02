@@ -53,7 +53,7 @@ public class MessageDeleteService {
             message.setDeletedByReceiver(true);
             message.setDeletedAt(LocalDateTime.now());
         }
-        if (message.isDeletedByReceiver() && message.isDeletedByReceiver()) { // 보낸쪽, 받는쪽 모두 삭제 한 경우 안보이게 처리
+        if (message.isDeletedBySender() && message.isDeletedByReceiver()) { // 보낸쪽, 받는쪽 모두 삭제 한 경우 안보이게 처리
             repository.saveAndFlush(message);
         }
 

@@ -7,9 +7,6 @@ import org.anonymous.member.Member;
 
 @Data
 public class RequestMessage {
-
-    private Long seq;
-
     /**
      * 메일을 받는 쪽 이메일
      *      필수가 되는 조건 : 회원이 다른 회원에게 쪽지를 보내는 경우
