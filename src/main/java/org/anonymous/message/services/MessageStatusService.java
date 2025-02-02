@@ -1,6 +1,7 @@
 package org.anonymous.message.services;
 
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.member.MemberUtil;
 import org.anonymous.message.constants.MessageStatus;
@@ -29,32 +30,26 @@ public class MessageStatusService {
         repository.saveAndFlush(item);
     }
 
-    public void block(String email) {
-        List<Message> items = repository.findAllByCreatedBy(email);
+    public void status(List<String> emails, boolean status) {
+
+        if (emails.isEmpty() && emails == null) {
+            // 예외처리
+            throw new BadRequestException();
+        }
+
+        for (String email : emails) {
+            List<Message> items = repository.findAllByCreatedBy(email);
 
 //        어드민이 아닐경우 권한없음
-        if (!memberUtil.isAdmin()) {
-            throw new UnAuthorizedException();
+            if (!memberUtil.isAdmin()) {
+                throw new UnAuthorizedException();
+            }
+
+            for (Message item : items) {
+
+                item.setBlock(status);
+            }
         }
 
-        for (Message item : items) {
-
-            item.setBlock(true);
-        }
-
-    }
-
-    public void unBlock(String email) {
-        List<Message> items = repository.findAllByCreatedBy(email);
-
-//        어드민이 아닐경우 권한없음
-        if (!memberUtil.isAdmin()) {
-            throw new UnAuthorizedException();
-        }
-
-        for (Message item : items) {
-
-            item.setBlock(false);
-        }
     }
 }
