@@ -49,7 +49,7 @@ public class MessageControllerTest {
 
         Map<String, String> loginForm = new HashMap<>();
 
-        loginForm.put("email", "user01@test.org");
+        loginForm.put("email", "user2@test.org");
         loginForm.put("password", "_aA123456");
 
         restTemplate = new RestTemplate();
@@ -78,7 +78,7 @@ public class MessageControllerTest {
 
         for (int i = 0; i < 5; i++) {
             form = new RequestMessage();
-            form.setReceiverEmail("user01@test.org");
+            form.setReceiverEmail("user2@test.org");
             form.setSubject("제목" + i);
             form.setContent("내용내용내용내용" + i);
 
@@ -117,7 +117,7 @@ public class MessageControllerTest {
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception {
 
-        mockMvc.perform(get("/view/52")
+        mockMvc.perform(get("/view/154")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
@@ -130,6 +130,7 @@ public class MessageControllerTest {
     void listTest() throws Exception {
 
         mockMvc.perform(get("/list")
+                        .param("status", "READ")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
@@ -141,6 +142,7 @@ public class MessageControllerTest {
     void countTest() throws Exception {
 
         mockMvc.perform(get("/count")
+                        .param("email", "user1@test.org")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
@@ -151,8 +153,7 @@ public class MessageControllerTest {
     void deletesTest() throws Exception {
 
         mockMvc.perform(patch("/deletes")
-                        .param("seq", "2052")
-                        .param("mode", "receive")
+                        .param("seq", "")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
