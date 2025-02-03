@@ -62,6 +62,8 @@ public class MessageInfoService {
 
         Message item = messageRepository.findOne(builder).orElseThrow(MessageNotFoundException::new);
 
+        addInfo(item);
+
         return item;
     }
 
@@ -136,5 +138,22 @@ public class MessageInfoService {
         Pagination pagination = new Pagination(page, (int) total, utils.isMobile() ? 5 : 10, limit, request);
 
         return new ListData<>(items, pagination);
+    }
+
+    /**
+     * 추가 정보 처리
+     * @param item
+     */
+    public void addInfo(Message item) {
+        Member member = memberUtil.getMember();
+        item.setReceived(
+                (item.isNotice() && item.getReceiverEmail() == null) ||
+                        item.getReceiverEmail().equals(member.getEmail())
+        );
+
+        // 삭제 가능 여부
+        boolean deletable = (item.isNotice() && memberUtil.isAdmin())
+                || (!item.isNotice() && (item.getSenderEmail().equals(member.getEmail()) || item.getReceiverEmail().equals(member.getEmail())));
+        item.setDeletable(deletable);
     }
 }

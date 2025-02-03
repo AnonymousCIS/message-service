@@ -7,6 +7,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import java.util.Objects;
+
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
@@ -17,7 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 
-        String profile = System.getenv("spring.profiles.active");
+        String profile = Objects.requireNonNullElse(System.getenv("spring.profiles.active"), "default");
 
         registry.addHandler(messageHandler, "msg")
                 .setAllowedOrigins(profile.contains("prod") ? "" : "http://cis-message-service.koreait.xyz");

@@ -2,6 +2,8 @@ package org.anonymous.message.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.rests.JSONData;
@@ -43,7 +45,13 @@ public class MessageAdminController {
      * @param status
      */
     @Operation(summary = "보낸 사람 이메일 블락 처리", description = "보낸 사람의 이메일을 블락, 언블락 처리합니다.")
-    @Parameter(name = "email", description = "보낸 사람 이메일", required = true, example = "user01@test.org")
+    @Parameters({
+            @Parameter(name = "email", description = "보낸 사람 이메일", required = true, example = "user01@test.org"),
+            @Parameter(name = "status", description = "블락, 언블락", examples = {
+                    @ExampleObject(name = "true", value = "true", description = "블락"),
+                    @ExampleObject(name = "false", value = "false", description = "언블락")
+            })
+    })
     @PatchMapping("/status")
     public void status(@RequestBody List<String> emails, @RequestParam("status") boolean status) {
 
