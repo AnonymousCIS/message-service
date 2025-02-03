@@ -4,12 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
-import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
 import org.anonymous.message.controllers.RequestMessage;
-import org.anonymous.message.services.MessageInfoService;
-import org.anonymous.message.services.MessageSendService;
-import org.anonymous.message.services.MessageStatusService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +78,7 @@ public class MessageControllerTest {
 
         for (int i = 0; i < 5; i++) {
             form = new RequestMessage();
-            form.setReceiverEmail("user01@test.org");
+            form.setReceiverEmail("user02@test.org");
             form.setSubject("제목" + i);
             form.setContent("내용내용내용내용" + i);
 
@@ -117,11 +113,11 @@ public class MessageControllerTest {
     }
 
     @Test
-    @MockMember
+    @MockMember(email = "user02@test.org")
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception {
 
-        mockMvc.perform(get("/view/1952")
+        mockMvc.perform(get("/view/1")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
