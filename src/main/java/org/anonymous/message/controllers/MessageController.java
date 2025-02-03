@@ -160,9 +160,9 @@ public class MessageController {
     @Operation(summary = "미열람 개수", description = "미열람 쪽지 개수를 확인합니다.")
     @Parameter(name = "receiverEmail", description = "쪽지 받는 사람 이메일")
     @GetMapping("/count")
-    public JSONData count(@RequestBody String email) {
+    public JSONData count(@RequestBody RequestMessage form) {
 
-        Long count = messageCountService.totalUnRead(email);
+        Long count = messageCountService.totalUnRead(form.getReceiverEmail());
         System.out.println("count : " + count);
 
         return new JSONData(count);
