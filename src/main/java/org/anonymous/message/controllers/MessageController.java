@@ -118,12 +118,12 @@ public class MessageController {
     public JSONData view(@PathVariable("seq") Long seq) {
 
 //        조회
-        Message item = infoService.get(seq);
+        Message data = infoService.get(seq);
 
 //        미열람 -> 열람 변환
         statusService.change(seq);
 
-        return new JSONData(item);
+        return new JSONData(data);
     }
 
     /**
@@ -147,9 +147,9 @@ public class MessageController {
     public JSONData list(@ModelAttribute MessageSearch search) {
 
 
-        ListData<Message> item = infoService.getList(search);
+        ListData<Message> data = infoService.getList(search);
 
-        return new JSONData(item);
+        return new JSONData(data);
     }
 
     /**
@@ -158,11 +158,11 @@ public class MessageController {
      * @return
      */
     @Operation(summary = "미열람 개수", description = "미열람 쪽지 개수를 확인합니다.")
-    @Parameter(name = "receiverEmail", description = "쪽지 받는 사람 이메일")
+    @Parameter(name = "email", description = "쪽지 받는 사람 이메일")
     @GetMapping("/count")
-    public JSONData count(@RequestBody RequestMessage form) {
+    public JSONData count(@RequestParam("email") String email) {
 
-        Long count = messageCountService.totalUnRead(form.getReceiverEmail());
+        Long count = messageCountService.totalUnRead(email);
         System.out.println("count : " + count);
 
         return new JSONData(count);
