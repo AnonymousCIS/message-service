@@ -78,7 +78,7 @@ public class MessageControllerTest {
 
         for (int i = 0; i < 5; i++) {
             form = new RequestMessage();
-            form.setReceiverEmail("user02@test.org");
+            form.setReceiverEmail("user01@test.org");
             form.setSubject("제목" + i);
             form.setContent("내용내용내용내용" + i);
 
@@ -113,11 +113,11 @@ public class MessageControllerTest {
     }
 
     @Test
-    @MockMember(email = "user02@test.org")
+    @MockMember
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception {
 
-        mockMvc.perform(get("/view/1")
+        mockMvc.perform(get("/view/52")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 

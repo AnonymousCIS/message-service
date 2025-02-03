@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @WithSecurityContext(factory = MockSecurityContextFactory.class)
 public @interface MockMember {
     long seq() default 1L;
-    String email() default "user01@test.org";
+    String email() default "user02@test.org";
     String name() default "사용자01";
     Authority[] authority() default { Authority.USER };
 }
