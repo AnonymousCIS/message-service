@@ -21,6 +21,7 @@ public class MessageDeleteService {
     private final MemberUtil memberUtil;
     private final MessageInfoService infoService;
     private final MessageRepository repository;
+    private final MessageStatusService statusService;
 
     /**
      * 삭제 처리

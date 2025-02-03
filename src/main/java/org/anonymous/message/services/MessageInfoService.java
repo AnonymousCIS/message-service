@@ -76,7 +76,7 @@ public class MessageInfoService {
         int page = Math.max(search.getPage(), 1);
         int limit = search.getLimit();
         limit = limit < 1 ? 20 : limit;
-        int offset =(page - 1) * limit;
+        int offset = (page - 1) * limit;
 
 //        검색 조건 처리 S
         BooleanBuilder andBuilder = new BooleanBuilder();
