@@ -8,6 +8,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long>, QuerydslPredicateExecutor<Message> {
-    @EntityGraph
     List<Message> findAllByCreatedBy(String email);
 }

@@ -49,7 +49,7 @@ public class MessageControllerTest {
 
         Map<String, String> loginForm = new HashMap<>();
 
-        loginForm.put("email", "user2@test.org");
+        loginForm.put("email", "user1@test.org");
         loginForm.put("password", "_aA123456");
 
         restTemplate = new RestTemplate();
@@ -76,9 +76,21 @@ public class MessageControllerTest {
     @DisplayName("쪽지 작성 테스트")
     void writeTest() throws Exception {
 
-        for (int i = 0; i < 5; i++) {
+        form = new RequestMessage();
+        form.setReceiverEmail("user2@test.org");
+        form.setSubject("제목123");
+        form.setContent("내용내용내용내용123");
+
+        String body = om.writeValueAsString(form);
+
+        mockMvc.perform(post("/write")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)).andDo(print());
+
+        /*for (int i = 1; i <= 5; i++) {
             form = new RequestMessage();
-            form.setReceiverEmail("user2@test.org");
+            form.setReceiverEmail("user" + i + "@test.org");
             form.setSubject("제목" + i);
             form.setContent("내용내용내용내용" + i);
 
@@ -88,9 +100,27 @@ public class MessageControllerTest {
                     .header("Authorization", "Bearer " + token)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)).andDo(print());
-        }
+        }*/
 
+        /*mockMvc.perform(get("/view/5")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
+        mockMvc.perform(get("/list")
+                .param("mode", "send")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());
+
+        mockMvc.perform(get("/count")
+                .param("email", "user5@test.org")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());
+
+        mockMvc.perform(patch("/deletes")
+                .param("seq", "56")
+                .param("receive", "user5@test.org")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());*/
 
 
 //        sendService.process(form);
@@ -117,7 +147,7 @@ public class MessageControllerTest {
     @DisplayName("쪽지 단일 조회 테스트")
     void viewTest() throws Exception {
 
-        mockMvc.perform(get("/view/154")
+        mockMvc.perform(get("/view/53")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
@@ -130,7 +160,7 @@ public class MessageControllerTest {
     void listTest() throws Exception {
 
         mockMvc.perform(get("/list")
-                        .param("status", "READ")
+                        .param("mode", "send")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
@@ -142,7 +172,7 @@ public class MessageControllerTest {
     void countTest() throws Exception {
 
         mockMvc.perform(get("/count")
-                        .param("email", "user1@test.org")
+                        .param("email", "user10@test.org")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }
@@ -153,7 +183,8 @@ public class MessageControllerTest {
     void deletesTest() throws Exception {
 
         mockMvc.perform(patch("/deletes")
-                        .param("seq", "")
+                        .param("seq", "54")
+                        .param("receive", "user3@test.org")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
     }

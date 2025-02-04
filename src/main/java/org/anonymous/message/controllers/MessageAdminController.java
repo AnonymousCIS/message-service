@@ -12,6 +12,7 @@ import org.anonymous.message.services.MessageStatusService;
 import org.anonymous.message.services.admins.MessageConfigDeleteService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Message Admin API", description = "Message Admin 기능")
@@ -46,7 +47,7 @@ public class MessageAdminController {
      */
     @Operation(summary = "보낸 사람 이메일 블락 처리", description = "보낸 사람의 이메일을 블락, 언블락 처리합니다.")
     @Parameters({
-            @Parameter(name = "email", description = "보낸 사람 이메일", required = true, example = "user01@test.org"),
+            @Parameter(name = "emails", description = "보낸 사람 이메일", required = true, example = "user01@test.org"),
             @Parameter(name = "status", description = "블락, 언블락", examples = {
                     @ExampleObject(name = "true", value = "true", description = "블락"),
                     @ExampleObject(name = "false", value = "false", description = "언블락")
@@ -54,7 +55,11 @@ public class MessageAdminController {
     })
     @PatchMapping("/status")
     public void status(@RequestBody List<String> emails, @RequestParam("status") boolean status) {
-
+        if (emails == null) {
+            emails = new ArrayList<>(); // 기본값 설정
+        }
+        System.out.println(status);
+        System.out.println("Emails"+ emails);
         statusService.status(emails, status);
     }
 }

@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Lazy
@@ -62,7 +61,7 @@ public class MessageInfoService {
 
         Message item = messageRepository.findOne(builder).orElseThrow(MessageNotFoundException::new);
 
-        addInfo(item);
+        addInfo(item); // 추가 정보 처리
 
         return item;
     }
@@ -76,7 +75,7 @@ public class MessageInfoService {
         int page = Math.max(search.getPage(), 1);
         int limit = search.getLimit();
         limit = limit < 1 ? 20 : limit;
-        int offset =(page - 1) * limit;
+        int offset = (page - 1) * limit;
 
 //        검색 조건 처리 S
         BooleanBuilder andBuilder = new BooleanBuilder();

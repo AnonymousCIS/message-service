@@ -1,7 +1,5 @@
 package org.anonymous.message.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -11,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
+import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.message.entities.Message;
@@ -34,7 +33,7 @@ public class MessageController {
     private final MessageCountService messageCountService;
     private final MessageStatusService statusService;
     private final MessageDeleteService deleteService;
-    private final ObjectMapper om;
+    private final Utils utils;
 
         /*
     * - POST /write : 쪽지 작성
@@ -91,17 +90,8 @@ public class MessageController {
         data.put("item", message);
         data.put("totalUnRead", totalUnRead);
 
-        StringBuffer sb = new StringBuffer();
-
-        try{
-            String json = om.writeValueAsString(data);
-            sb.append(String.format("if (typeof webSocket != undefined) { webSocket.onopen = () => webSocket.send('%s'); }", json));
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        sb.append(String.format("location.replace('%s')", request.getContextPath() + "/list"));
+//        웹훅 전송
+        utils.sendHook("message", data);
 
         return new JSONData(data);
     }
@@ -118,12 +108,12 @@ public class MessageController {
     public JSONData view(@PathVariable("seq") Long seq) {
 
 //        조회
-        Message item = infoService.get(seq);
+        Message data = infoService.get(seq);
 
 //        미열람 -> 열람 변환
         statusService.change(seq);
 
-        return new JSONData(item);
+        return new JSONData(data);
     }
 
     /**
@@ -147,9 +137,9 @@ public class MessageController {
     public JSONData list(@ModelAttribute MessageSearch search) {
 
 
-        ListData<Message> item = infoService.getList(search);
+        ListData<Message> data = infoService.getList(search);
 
-        return new JSONData(item);
+        return new JSONData(data);
     }
 
     /**
@@ -158,11 +148,11 @@ public class MessageController {
      * @return
      */
     @Operation(summary = "미열람 개수", description = "미열람 쪽지 개수를 확인합니다.")
-    @Parameter(name = "receiverEmail", description = "쪽지 받는 사람 이메일")
+    @Parameter(name = "email", description = "쪽지 받는 사람 이메일")
     @GetMapping("/count")
-    public JSONData count(@RequestBody RequestMessage form) {
+    public JSONData count(@RequestParam("email") String email) {
 
-        Long count = messageCountService.totalUnRead(form.getReceiverEmail());
+        Long count = messageCountService.totalUnRead(email);
         System.out.println("count : " + count);
 
         return new JSONData(count);

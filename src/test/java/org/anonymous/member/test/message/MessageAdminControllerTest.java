@@ -1,10 +1,12 @@
 package org.anonymous.member.test.message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
+import org.anonymous.message.controllers.RequestMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,14 +37,20 @@ public class MessageAdminControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper om;
+
+    private RequestMessage form;
+
     private String token;
+
 
     @BeforeEach
     void init() throws JsonProcessingException {
 
         Map<String, String> loginForm = new HashMap<>();
 
-        loginForm.put("email", "user01@test.org");
+        loginForm.put("email", "user1@test.org");
         loginForm.put("password", "_aA123456");
 
         restTemplate = new RestTemplate();
@@ -60,7 +69,6 @@ public class MessageAdminControllerTest {
 
         System.out.println("token : " + token);
 
-
     }
 
     @Test
@@ -69,9 +77,25 @@ public class MessageAdminControllerTest {
     void deletesTest() throws Exception{
 
         mockMvc.perform(delete("/admin/deletes")
-                .param("seq", "2052")
+                .param("seq", "1")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
     }
+
+    @Test
+    @MockMember(authority = Authority.ADMIN)
+    @DisplayName("쪽지 어드민 블락, 언블락 처리")
+    void statusTest() throws Exception {
+
+        List<String> emails = List.of("user2@test.org");
+        String body = om.writeValueAsString(emails);
+
+        mockMvc.perform(patch("/admin/status")
+                .param("status", "true")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)).andDo(print());
+    }
+
 }
