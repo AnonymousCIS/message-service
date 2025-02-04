@@ -69,7 +69,6 @@ public class MessageAdminControllerTest {
 
         System.out.println("token : " + token);
 
-
     }
 
     @Test

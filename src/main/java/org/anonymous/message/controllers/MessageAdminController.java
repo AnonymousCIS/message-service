@@ -58,6 +58,8 @@ public class MessageAdminController {
         if (emails == null) {
             emails = new ArrayList<>(); // 기본값 설정
         }
+        System.out.println(status);
+        System.out.println("Emails"+ emails);
         statusService.status(emails, status);
     }
 }

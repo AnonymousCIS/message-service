@@ -48,6 +48,7 @@ public class MessageStatusService {
             for (Message item : items) {
 
                 item.setBlock(status);
+                repository.saveAndFlush(item);
             }
         }
 

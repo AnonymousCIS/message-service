@@ -49,7 +49,7 @@ public class MessageControllerTest {
 
         Map<String, String> loginForm = new HashMap<>();
 
-        loginForm.put("email", "user5@test.org");
+        loginForm.put("email", "user1@test.org");
         loginForm.put("password", "_aA123456");
 
         restTemplate = new RestTemplate();
