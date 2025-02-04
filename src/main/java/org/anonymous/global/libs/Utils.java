@@ -1,28 +1,38 @@
 package org.anonymous.global.libs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.net.URI;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Lazy
 @Component
 @RequiredArgsConstructor
 public class Utils {
+
+    @Value("${front.domain}")
+    private String frontDomain;
+    private final ObjectMapper om;
+    private final RestTemplate restTemplate;
 
     private final HttpServletRequest request;
     private final MessageSource messageSource;
@@ -165,4 +175,53 @@ public class Utils {
 
         return headers;
     }
+
+    /**
+     * 웹훅 서비스.
+     *
+     * @param mode
+     * @param data
+     */
+    public void sendHook(String mode, Object data) {
+        List<String> urls = Arrays.stream(frontDomain.split(",")).map(String::trim).toList();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("mode", mode);
+        params.put("data", data);
+
+        try {
+            String json = om.writeValueAsString(params);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(json, headers);
+
+            for (String url : urls) {
+                restTemplate.postForEntity(url + "/webhook", request, Void.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

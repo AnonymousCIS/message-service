@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
+import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.message.entities.Message;
@@ -35,6 +36,7 @@ public class MessageController {
     private final MessageStatusService statusService;
     private final MessageDeleteService deleteService;
     private final ObjectMapper om;
+    private final Utils utils;
 
         /*
     * - POST /write : 쪽지 작성
@@ -91,17 +93,9 @@ public class MessageController {
         data.put("item", message);
         data.put("totalUnRead", totalUnRead);
 
-        StringBuffer sb = new StringBuffer();
-
-        try{
-            String json = om.writeValueAsString(data);
-            sb.append(String.format("if (typeof webSocket != undefined) { webSocket.onopen = () => webSocket.send('%s'); }", json));
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        sb.append(String.format("location.replace('%s')", request.getContextPath() + "/list"));
+        // 웹 훅 전송
+        // 이거 local일땐 안보내는 방식을 설정해야할듯.
+        utils.sendHook("message", data);
 
         return new JSONData(data);
     }
