@@ -1,7 +1,5 @@
 package org.anonymous.message.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -11,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.global.exceptions.BadRequestException;
+import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.message.entities.Message;
@@ -34,7 +33,7 @@ public class MessageController {
     private final MessageCountService messageCountService;
     private final MessageStatusService statusService;
     private final MessageDeleteService deleteService;
-    private final ObjectMapper om;
+    private final Utils utils;
 
         /*
     * - POST /write : 쪽지 작성
@@ -93,6 +92,7 @@ public class MessageController {
 
         StringBuffer sb = new StringBuffer();
 
+        /*
         try{
             String json = om.writeValueAsString(data);
             sb.append(String.format("if (typeof webSocket != undefined) { webSocket.onopen = () => webSocket.send('%s'); }", json));
@@ -102,6 +102,10 @@ public class MessageController {
         }
 
         sb.append(String.format("location.replace('%s')", request.getContextPath() + "/list"));
+         */
+
+        // WebHook 전송
+        utils.sendHook("message", data);
 
         return new JSONData(data);
     }
