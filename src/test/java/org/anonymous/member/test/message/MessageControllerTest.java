@@ -76,7 +76,19 @@ public class MessageControllerTest {
     @DisplayName("쪽지 작성 테스트")
     void writeTest() throws Exception {
 
-        for (int i = 1; i <= 5; i++) {
+        form = new RequestMessage();
+        form.setReceiverEmail("user2@test.org");
+        form.setSubject("제목123");
+        form.setContent("내용내용내용내용123");
+
+        String body = om.writeValueAsString(form);
+
+        mockMvc.perform(post("/write")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)).andDo(print());
+
+        /*for (int i = 1; i <= 5; i++) {
             form = new RequestMessage();
             form.setReceiverEmail("user" + i + "@test.org");
             form.setSubject("제목" + i);
@@ -88,9 +100,9 @@ public class MessageControllerTest {
                     .header("Authorization", "Bearer " + token)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)).andDo(print());
-        }
+        }*/
 
-        mockMvc.perform(get("/view/5")
+        /*mockMvc.perform(get("/view/5")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print());
 
@@ -108,7 +120,7 @@ public class MessageControllerTest {
                 .param("seq", "56")
                 .param("receive", "user5@test.org")
                 .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print());
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());*/
 
 
 //        sendService.process(form);

@@ -29,11 +29,9 @@ public class Message extends BaseMemberEntity {
 
     private String senderEmail; // 보낸사람 이메일
 
-
     private String senderName; // 보낸 사람 이름
 
     private String receiverEmail; //받는 사람 이메일
-
 
     private String receiverName; // 받는 사람 이름
 
