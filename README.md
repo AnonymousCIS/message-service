@@ -14,13 +14,13 @@
 - 쪽지 미열람 개수
 - 쪽지 단일 | 목록 일괄 삭제(DB 삭제 X)
 
-### ERD
+## ERD
 ![MSA_PROJECT-MESSAGE.png](MSA_PROJECT-MESSAGE.png)
 
 - SEQ : 메세지 번호(기본키)
-- DELETED_BY_RECEIVER : 받는 사람이 삭제
-- DELETED_BY_SENDER : 보낸 사람이 삭제
-- IS_BLOCK : 블락, 언블락
+- DELETED_BY_RECEIVER : 받는 사람이 삭제 여부
+- DELETED_BY_SENDER : 보낸 사람이 삭제 여부
+- IS_BLOCK : 블락 여부
 - NOTICE : 공지
 - CREATED_AT : 작성 날짜
 - DELETED_AT : 삭제 날짜
@@ -35,10 +35,10 @@
 - SENDER_NAME : 보낸 사람 이름
 - CONTENT : 내용
 
-### 스웨거 API
-http://cis-message-service.koreait.xyz/swagger-ui/index.html
+## 스웨거 API
+http://cis-message-service.koreait.xyz/apidocs.html
 
-### MESSAGE SERVICE 담당자 & 역할
+## MESSAGE SERVICE 담당자 & 역할
 오준학
 - 쪽지 유저(작성, 조회, 목록, 미열람, 삭제) 서비스
 - 관리자(삭제, 블락, 언블락처리) 서비스
