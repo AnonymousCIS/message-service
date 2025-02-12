@@ -1,11 +1,13 @@
 package org.anonymous.message.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.anonymous.member.Member;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestMessage {
     /**
      * 메일을 받는 쪽 이메일
