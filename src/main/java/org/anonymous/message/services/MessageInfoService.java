@@ -67,7 +67,7 @@ public class MessageInfoService {
     }
 
     /**
-     * 쪽지 목록 조회
+     * 어드민 쪽지 목록 조회
      * @param search
      * @return
      */
