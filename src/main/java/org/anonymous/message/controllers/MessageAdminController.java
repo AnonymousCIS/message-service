@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.message.entities.Message;
+import org.anonymous.message.services.MessageInfoService;
 import org.anonymous.message.services.MessageStatusService;
 import org.anonymous.message.services.admins.MessageConfigDeleteService;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,26 @@ public class MessageAdminController {
 
     private final MessageConfigDeleteService deleteService;
     private final MessageStatusService statusService;
+    private final MessageInfoService infoService;
+
+    /**
+     * 쪽지 목록 조회
+     *
+     * @return
+     */
+    @Operation(summary = "쪽지 목록 조회", description = "쪽지 목록으로 조회합니다.")
+    @Parameter(name = "status", description = "상태(열람, 미열람)별 조회", examples = {
+            @ExampleObject(name = "READ", value = "READ", description = "열람"),
+            @ExampleObject(name = "UNREAD", value = "UNREAD", description = "미열람")
+    })
+    @GetMapping("/list")
+    public JSONData list(@ModelAttribute MessageSearch search) {
+
+
+        ListData<Message> data = infoService.getAdminList(search);
+
+        return new JSONData(data);
+    }
 
     /**
      * 어드민 쪽지 단일 & 목록 일괄 삭제
