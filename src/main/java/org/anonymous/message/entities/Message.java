@@ -1,5 +1,6 @@
 package org.anonymous.message.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import org.anonymous.message.constants.MessageStatus;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(indexes = @Index(name = "idx_notice_created_at", columnList = "notice DESC, createdAt DESC"))
 public class Message extends BaseMemberEntity {
 
