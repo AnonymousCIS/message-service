@@ -74,6 +74,18 @@ public class MessageAdminControllerTest {
     @Test
     @MockMember(authority = Authority.ADMIN)
     @DisplayName("쪽지 어드민 단일 & 목록 삭제")
+    void listTest() throws Exception{
+
+        mockMvc.perform(delete("/admin/list")
+                .param("seq", "1")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print());
+
+    }
+
+    @Test
+    @MockMember(authority = Authority.ADMIN)
+    @DisplayName("쪽지 어드민 단일 & 목록 삭제")
     void deletesTest() throws Exception{
 
         mockMvc.perform(delete("/admin/deletes")
