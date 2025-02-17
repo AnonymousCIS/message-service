@@ -141,7 +141,7 @@ public class MessageInfoService {
             BooleanBuilder andBuilder2 = new BooleanBuilder();
 
             orBuilder.or(andBuilder2.and(message.notice.eq(true)).and(message.receiverEmail.isNull())) //공지 쪽지
-                    .or(andBuilder2.and(message.receiverEmail.eq(member.getEmail())));
+                    .or(message.receiverEmail.eq(member.getEmail()));
 
             andBuilder.and(orBuilder).and(message.deletedAt.isNull());
         }
