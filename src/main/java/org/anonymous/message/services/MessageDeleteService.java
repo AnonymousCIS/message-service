@@ -47,18 +47,20 @@ public class MessageDeleteService {
 
         if (mode.equals("send")) { //보낸쪽
             message.setDeletedBySender(true);
-            message.setDeletedAt(LocalDateTime.now());
+            //message.setDeletedAt(LocalDateTime.now());
         }
         if (mode.equals("receive")) { // 받는쪽
             message.setDeletedByReceiver(true);
-            message.setDeletedAt(LocalDateTime.now());
+            // message.setDeletedAt(LocalDateTime.now());
         }
         if (message.isDeletedBySender() && message.isDeletedByReceiver()) { // 보낸쪽, 받는쪽 모두 삭제 한 경우 안보이게 처리
+            message.setDeletedAt(LocalDateTime.now());
             repository.saveAndFlush(message);
+
         }
 
 //        삭제 진행이 필요한 경우
-        if (isProceedDelete) {
+        if (isProceedDelete && memberUtil.isAdmin()) {
 
             //DB에서 삭제
             repository.delete(message);
